@@ -1,42 +1,81 @@
-#include "Encoder.hpp"
+/* ***************************************************************** */
+/* File name:        Encoder.ccp                                     */
+/* File description: This file contains the functions/methods for    */
+/*                   initializing and using the encoder              */
+/* Author name:      Andre Won, Cassio Dezzoti, Totmes Scheffer,     */
+/*                   Guilherme Abreu                                 */
+/* Creation date:    11out2021                                       */
+/* Revision date:    28nov2021                                       */
+/* ***************************************************************** */
+#include "Encoder.h"
 
-encTable actPos = {0, 0};
-encTable signal = {1, 1};
-encTable lastChange = {0, 0};
+/* ***************************************************************** */
+/* Method name:        Encoder                                       */
+/* Method description: Declaring a Encoder class and initializing it */
+/* Input params: pino1                                               */
+/* Output params: n/a                                                */
+/* ***************************************************************** */
+Encoder::Encoder(byte pino1) {
+    this->pino1 = pino1;
 
-void encoderBegin(int leftPin, int rightPin) {
-    pinMode(leftPin, INPUT);
-    pinMode(rightPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(leftPin), enc_leftEncIRQ, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(rightPin), enc_rightEncIRQ, CHANGE);
+    void initEncoder();
 }
 
-void enc_leftEncIRQ() {
-    /* Evita bouncing back do sinal */
-    if ((micros() - lastChange.left) < ENC_DEADTIME) return;
-    lastChange.left = micros();
-
-    /* Verifica se variavel vai explodir e inverte contagem */
-    if (actPos.left == 0xFFFFFFFF)
-        signal.left = -1;
-    else if (actPos.left == 0)
-        signal.left = 1;
-
-    /* Atualiza posicao */
-    actPos.left += signal.left;
+/* ***************************************************************** */
+/* Method name:        initEncoder                                   */
+/* Method description: Iniializing the encoder                       */
+/* Input params: n/a                                                 */
+/* Output params: n/a                                                */
+/* ***************************************************************** */
+void Encoder::initEncoder() {
+    pinMode(pino1, INPUT_PULLUP); /* defining selected pin as a PULLUP input */
 }
 
-void enc_rightEncIRQ() {
-    /* Evita bounceback do sinal */
-    if ((micros() - lastChange.right) < ENC_DEADTIME) return;
-    lastChange.right = micros();
+/* ***************************************************************** */
+/* Method name:        getVeocity                                    */
+/* Method description: Get current robot velocity                    */
+/* Input params: n/a                                                 */
+/* Output params: n/a                                                */
+/* ***************************************************************** */
+float Encoder::getVelocity() {
+    int pulse = digitalRead(pino1); /* get the velocity value from the selected pin */
+    return pulse;
+}
 
-    /* Verifica se variavel vai explodir e inverte contagem */
-    if (actPos.right == 0xFFFFFFFF)
-        signal.right = -1;
-    else if (actPos.right == 0)
-        signal.right = 1;
+/* ***************************************************************** */
+/* Method name:        isMoving                                      */
+/* Method description: return true if motor is moving                */
+/* Input params: m/a                                                 */
+/* Output params: true or false                                      */
+/* ***************************************************************** */
+boolean Encoder::isMoving() {
+    boolean isMoving = false;
 
-    /* Atualiza posicao */
-    actPos.right += signal.right;
+    int counter = 0;
+    int pulses = 0;
+
+    int prevPulse = digitalRead(pino1); /* get pulse value from pino1 */
+    int pulse = digitalRead(pino1);     /* get another pulse value from pino1 */
+
+    while (!isMoving) {
+        pulse = digitalRead(pino1); /* get pulse value from pino1 */
+        delay(10);                  /* delay 10 miliseconds */
+        if (prevPulse != pulse) {   /* check previous pulse with actual pulse */
+            delay(10);
+            pulses++; /* if they are different add to pulses*/
+        } else {
+            counter++; /*if they are equal add to counter */
+        }
+
+        prevPulse = pulse;
+        if (pulses > 3) { /* check if number of counted pulses is greater than 3 */
+            delay(10);
+            isMoving = true; /*if its true then our robot is moving */
+        }
+        if (counter > 200) { /* check if number of counter is geater than 200 */
+            break;           /*the robot is not moving */
+        }
+    }
+
+    return isMoving;
 }
