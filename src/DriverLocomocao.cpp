@@ -9,7 +9,7 @@
 /* ***************************************************************** */
 #include "DriverLocomocao.h"
 
-#define MOTOR1_S   190
+#define MOTOR1_S   200
 #define MOTOR2_S   180
 
 /* ***************************************************************** */
@@ -54,10 +54,10 @@ void DriverLocomocao::initLocomocao() {
 /* ***************************************************************** */
 boolean DriverLocomocao::moverFrente() {
     // toda velocidade
-    analogWrite(pino1, MOTOR1_S); /* setting pino1 as 240 on an analog level */
-    analogWrite(pino2, 0);   /* setting pino2 as 0 on an analog level */
-    analogWrite(pino3, MOTOR2_S); /* setting pino3 as 210 on an analog level */
-    analogWrite(pino4, 0);   /* setting pino4 as 0 on an analog level */
+    analogWrite(pino1, 0);   /* setting pino2 as 0 on an analog level */
+    analogWrite(pino2, MOTOR1_S); /* setting pino1 as 240 on an analog level */
+    analogWrite(pino3, 0);   /* setting pino4 as 0 on an analog level */
+    analogWrite(pino4, MOTOR2_S); /* setting pino3 as 210 on an analog level */
     // falta a parte do encoder
     return false;
 }
@@ -69,10 +69,10 @@ boolean DriverLocomocao::moverFrente() {
 /* Output params: n/a                                                */
 /* ***************************************************************** */
 boolean DriverLocomocao::moverTras() {
-    analogWrite(pino1, 0);   /* setting pino1 as 0 on an analog level */
-    analogWrite(pino2, MOTOR1_S); /* setting pino2 as 240 on an analog level */
-    analogWrite(pino3, 0);   /* setting pino3 as 0 on an analog level */
-    analogWrite(pino4, MOTOR2_S); /* setting pino4 as 210 on an analog level */
+    analogWrite(pino1, MOTOR1_S*0.8); /* setting pino2 as 240 on an analog level */
+    analogWrite(pino2, 0);   /* setting pino1 as 0 on an analog level */
+    analogWrite(pino3, MOTOR2_S*0.8); /* setting pino4 as 210 on an analog level */
+    analogWrite(pino4, 0);   /* setting pino3 as 0 on an analog level */
 
     return false;
 }
@@ -99,8 +99,8 @@ void DriverLocomocao::parar() {
 boolean DriverLocomocao::virarDireita() {
     analogWrite(pino1, 0);   /* setting pino 1 as 0 on an analog level */
     analogWrite(pino2, 0);   /* setting pino 2 as 0 on an analog level */
-    analogWrite(pino3, MOTOR2_S); /* setting pino 3 as 210 on an analog level */
-    analogWrite(pino4, 0);   /* setting pino 4 as 0 on an analog level */
+    analogWrite(pino3, 0);   /* setting pino 4 as 0 on an analog level */
+    analogWrite(pino4, MOTOR2_S); /* setting pino 3 as 210 on an analog level */
     return false;
 }
 
@@ -111,8 +111,8 @@ boolean DriverLocomocao::virarDireita() {
 /* Output params:  true or false                                     */
 /* ***************************************************************** */
 boolean DriverLocomocao::virarEsquerda() {
-    analogWrite(pino1, MOTOR1_S); /* setting pino 1 as 240 on an analog level */
-    analogWrite(pino2, 0);   /* setting pino 2 as 0 on an analog level */
+    analogWrite(pino1, 0);   /* setting pino 2 as 0 on an analog level */
+    analogWrite(pino2, MOTOR1_S); /* setting pino 1 as 240 on an analog level */
     analogWrite(pino3, 0);   /* setting pino 3 as 0 on an analog level */
     analogWrite(pino4, 0);   /* setting pino 4 as 0 on an analog level */
     return false;
